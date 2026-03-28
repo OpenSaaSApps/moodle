@@ -1,0 +1,97 @@
+##############################################################################
+# Moodle LMS — Coolify-ready Docker Compose
+#
+# Open Source Learning Management System
+# https://github.com/bitnami/containers/tree/main/bitnami/moodle
+#
+# ══════════════════════════════════════════════════════════════════════════
+# REQUIRED — must be set before deployment
+# ══════════════════════════════════════════════════════════════════════════
+#   MOODLE_PASSWORD              – Admin password
+#
+# ── Optional — sensible defaults provided ────────────────────────────────
+#   MOODLE_PORT                  – Host port               (default: 8080)
+#   MOODLE_USERNAME              – Admin username            (default: admin)
+#   MOODLE_EMAIL                 – Admin email               (default: admin@example.com)
+#   MOODLE_SITE_NAME             – Site name                 (default: Moodle)
+#   MOODLE_LANG                  – Default language          (default: en)
+#   MOODLE_DATABASE_TYPE         – DB type                   (default: mariadb)
+#   MOODLE_DATABASE_HOST         – DB host                   (default: db)
+#   MOODLE_DATABASE_PORT_NUMBER  – DB port                   (default: 3306)
+#   MOODLE_DATABASE_USER         – DB user                   (default: moodle)
+#   MOODLE_DATABASE_PASSWORD     – DB password               (default: moodlepass)
+#   MOODLE_DATABASE_NAME         – DB name                   (default: moodle)
+#   MOODLE_SKIP_BOOTSTRAP        – Skip initial setup        (default: no)
+#   MOODLE_SMTP_HOST             – SMTP server
+#   MOODLE_SMTP_PORT             – SMTP port                 (default: 587)
+#   MOODLE_SMTP_USER             – SMTP user
+#   MOODLE_SMTP_PASSWORD         – SMTP password
+#   MOODLE_SMTP_PROTOCOL         – SMTP protocol             (default: tls)
+#   MARIADB_ROOT_PASSWORD        – MariaDB root password     (default: rootpass)
+##############################################################################
+
+services:
+  moodle:
+    image: bitnami/moodle:latest
+    restart: unless-stopped
+    ports:
+      - "${MOODLE_PORT:-8080}:8080"
+    environment:
+      - MOODLE_USERNAME=${MOODLE_USERNAME:-admin}
+      - MOODLE_PASSWORD=${MOODLE_PASSWORD:?Set MOODLE_PASSWORD}
+      - MOODLE_EMAIL=${MOODLE_EMAIL:-admin@example.com}
+      - MOODLE_SITE_NAME=${MOODLE_SITE_NAME:-Moodle}
+      - MOODLE_LANG=${MOODLE_LANG:-en}
+      - MOODLE_DATABASE_TYPE=${MOODLE_DATABASE_TYPE:-mariadb}
+      - MOODLE_DATABASE_HOST=${MOODLE_DATABASE_HOST:-db}
+      - MOODLE_DATABASE_PORT_NUMBER=${MOODLE_DATABASE_PORT_NUMBER:-3306}
+      - MOODLE_DATABASE_USER=${MOODLE_DATABASE_USER:-moodle}
+      - MOODLE_DATABASE_PASSWORD=${MOODLE_DATABASE_PASSWORD:-moodlepass}
+      - MOODLE_DATABASE_NAME=${MOODLE_DATABASE_NAME:-moodle}
+      - MOODLE_SKIP_BOOTSTRAP=${MOODLE_SKIP_BOOTSTRAP:-no}
+      - MOODLE_SMTP_HOST=${MOODLE_SMTP_HOST:-}
+      - MOODLE_SMTP_PORT=${MOODLE_SMTP_PORT:-587}
+      - MOODLE_SMTP_USER=${MOODLE_SMTP_USER:-}
+      - MOODLE_SMTP_PASSWORD=${MOODLE_SMTP_PASSWORD:-}
+      - MOODLE_SMTP_PROTOCOL=${MOODLE_SMTP_PROTOCOL:-tls}
+    volumes:
+      - moodle_data:/bitnami/moodle
+      - moodledata_data:/bitnami/moodledata
+    depends_on:
+      db:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"
+
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD:-rootpass}
+      - MARIADB_USER=${MOODLE_DATABASE_USER:-moodle}
+      - MARIADB_PASSWORD=${MOODLE_DATABASE_PASSWORD:-moodlepass}
+      - MARIADB_DATABASE=${MOODLE_DATABASE_NAME:-moodle}
+      - MARIADB_CHARACTER_SET=utf8mb4
+      - MARIADB_COLLATE=utf8mb4_unicode_ci
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"
+
+volumes:
+  moodle_data:
+  moodledata_data:
+  mariadb_data:
