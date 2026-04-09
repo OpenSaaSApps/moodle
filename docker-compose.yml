@@ -1,0 +1,47 @@
+services:
+  app:
+    image: bitnami/moodle:latest
+    container_name: moodle
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      - MOODLE_DATABASE_HOST=${{MOODLE_DATABASE_HOST}}
+      - MOODLE_DATABASE_NAME=${{MOODLE_DATABASE_NAME}}
+      - MOODLE_DATABASE_USER=${{MOODLE_DATABASE_USER}}
+      - MOODLE_DATABASE_PASSWORD=${{MOODLE_DATABASE_PASSWORD}}
+      - MOODLE_USERNAME=${{MOODLE_USERNAME}}
+      - MOODLE_PASSWORD=${{MOODLE_PASSWORD}}
+      - MOODLE_EMAIL=${{MOODLE_EMAIL}}
+      - MOODLE_SITE_NAME=${{MOODLE_SITE_NAME}}
+      - MOODLE_HOST=${{MOODLE_HOST}}
+      - MOODLE_SMTP_HOST=${{MOODLE_SMTP_HOST}}
+      - MOODLE_SMTP_PORT=${{MOODLE_SMTP_PORT}}
+      - MOODLE_SMTP_USER=${{MOODLE_SMTP_USER}}
+      - MOODLE_SMTP_PASSWORD=${{MOODLE_SMTP_PASSWORD}}
+      - MOODLE_SMTP_PROTOCOL=${{MOODLE_SMTP_PROTOCOL}}
+    volumes:
+      - app_data:/data
+    networks:
+      - internal
+
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MOODLE_DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${MOODLE_DATABASE_NAME}
+      MYSQL_USER: ${MOODLE_DATABASE_USER}
+      MYSQL_PASSWORD: ${MOODLE_DATABASE_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - internal
+
+volumes:
+  db_data:
+volumes:
+  app_data:
+
+networks:
+  internal:
