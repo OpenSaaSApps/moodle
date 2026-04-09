@@ -1,48 +1,59 @@
-# Moodle
+# moodle
 
-<p align="center"><a href="https://moodle.org" target="_blank" title="Moodle Website">
-  <img src="https://raw.githubusercontent.com/moodle/moodle/main/.github/moodlelogo.svg" alt="The Moodle Logo">
-</a></p>
+> Click To Deploy Moodle LXP — SFIA-compatible Learning Experience Platform
 
-[Moodle][1] is the World's Open Source Learning Platform, widely used around the world by countless universities, schools, companies, and all manner of organisations and individuals.
+[![Sync](https://github.com/opensaasapps/moodle/actions/workflows/sync.yml/badge.svg)](https://github.com/opensaasapps/moodle/actions/workflows/sync.yml) [![Docker](https://github.com/opensaasapps/moodle/actions/workflows/docker.yml/badge.svg)](https://github.com/opensaasapps/moodle/actions/workflows/docker.yml) [![Docker Pulls](https://img.shields.io/docker/pulls/thefractionalpm/moodle)](https://hub.docker.com/r/thefractionalpm/moodle)
 
-Moodle is designed to allow educators, administrators and learners to create personalised learning environments with a single robust, secure and integrated system.
+Upstream: [moodle/moodle](https://github.com/moodle/moodle) · Auto-synced daily
 
-## Documentation
+---
 
-- Read our [User documentation][3]
-- Discover our [developer documentation][5]
-- Take a look at our [demo site][4]
+## One-Command Deploy
 
-## Community
+```bash
+cp .env.example .env && nano .env
+docker compose up -d
+```
 
-[moodle.org][1] is the central hub for the Moodle Community, with spaces for educators, administrators and developers to meet and work together.
+## Coolify / Dokploy
 
-You may also be interested in:
+1. New service → **Docker Compose**
+2. Paste `docker-compose.yml`
+3. Set env vars in UI
+4. Deploy
 
-- attending a [Moodle Moot][6]
-- our regular series of [developer meetings][7]
-- the [Moodle User Association][8]
+## Environment Variables
 
-## Installation and hosting
+| Variable | Required | Description |
+|---|---|---|
+| `MOODLE_DATABASE_HOST` | ⚪ | |
+| `MOODLE_DATABASE_NAME` | ⚪ | |
+| `MOODLE_DATABASE_USER` | ⚪ | |
+| `MOODLE_DATABASE_PASSWORD` | ✅ | |
+| `MOODLE_USERNAME` | ⚪ | |
+| `MOODLE_PASSWORD` | ✅ | |
+| `MOODLE_EMAIL` | ⚪ | |
+| `MOODLE_SITE_NAME` | ⚪ | |
+| `MOODLE_HOST` | ⚪ | |
+| `MOODLE_SMTP_HOST` | ✅ | |
+| `MOODLE_SMTP_PORT` | ⚪ | |
+| `MOODLE_SMTP_USER` | ✅ | |
+| `MOODLE_SMTP_PASSWORD` | ✅ | |
+| `MOODLE_SMTP_PROTOCOL` | ⚪ | |
 
-Moodle is Free, and Open Source software. You can easily [download Moodle][9] and run it on your own web server, however you may prefer to work with one of our experienced [Moodle Partners][10].
+## Image
 
-Moodle also offers hosting through both [MoodleCloud][11], and our [partner network][10].
+```
+docker pull bitnami/moodle:latest
+docker pull thefractionalpm/moodle:latest
+```
 
-## License
+## Ports
 
-Moodle is provided freely as open source software, under version 3 of the GNU General Public License. See our [license page][12] for more information.
+| Port | Service |
+|---|---|
+| `8080` | Main app |
 
-[1]: https://moodle.org
-[2]: https://moodle.com
-[3]: https://docs.moodle.org/
-[4]: https://sandbox.moodledemo.net/
-[5]: https://moodledev.io
-[6]: https://moodle.com/events/mootglobal/
-[7]: https://moodledev.io/general/community/meetings
-[8]: https://moodleassociation.org/
-[9]: https://download.moodle.org
-[10]: https://moodle.com/partners
-[11]: https://moodle.com/cloud
-[12]: https://moodledev.io/general/license
+---
+
+*Part of the [OpenSaaSApps](https://github.com/opensaasapps) Click-To-Deploy collection.*
